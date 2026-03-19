@@ -1,5 +1,7 @@
 package com.jin.project01.service.user;
 
+import com.jin.project01.dto.user.LoginRequest;
+import com.jin.project01.dto.user.LoginResponse;
 import com.jin.project01.dto.user.SignUpRequest;
 import com.jin.project01.entity.user.Role;
 import com.jin.project01.entity.user.User;
@@ -18,6 +20,7 @@ public class UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
 
+    // 회원가입
     @Transactional
     public Long signUp(SignUpRequest request) {
 
@@ -28,7 +31,7 @@ public class UserService {
         User user = User.builder()
                 .userId(request.getUserId())
                 .userName(request.getUserName())
-                .userPw(passwordEncoder.encode(request.getUserPw()))
+                .userPw(encodedPassword)
                 .userEmail(request.getUserEmail())
                 .userPhone(request.getUserPhone())
                 .userAddrPost(request.getUserAddrPost())
@@ -39,7 +42,6 @@ public class UserService {
                 .build();
 
         User saveUser = userRepository.save(user);
-
         return saveUser.getUserNo();
     }
 
@@ -55,5 +57,22 @@ public class UserService {
         if (userRepository.existsByUserPhone(request.getUserPhone())) {
             throw new IllegalStateException("이미 사용중인 전화번호입니다.");
         }
+    }
+
+    // 로그인
+    @Transactional(readOnly = true)
+    public LoginResponse login(LoginRequest request) {
+        User user = userRepository.findByUserId(request.getUserId())
+                .orElseThrow(() -> new IllegalArgumentException("아이디 또는 비밀번호가 올바르지 않습니다."));
+
+        if (!passwordEncoder.matches(request.getUserPw(), user.getUserPw())) {
+            throw new IllegalStateException("아이디 또는 비밀번호가 올바르지 않습니다.");
+        }
+
+        return new LoginResponse(
+                user.getUserNo(),
+                user.getUserId(),
+                user.getUserName()
+        );
     }
 }
