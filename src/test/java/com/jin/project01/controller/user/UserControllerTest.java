@@ -10,7 +10,6 @@ import com.jin.project01.service.user.UserService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
@@ -20,6 +19,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -145,17 +145,26 @@ public class UserControllerTest {
     void login_success() throws Exception {
         LoginRequest request = new LoginRequest("test123", "1234abcd!");
 
+        LoginResponse response = LoginResponse.builder()
+                .userNo(1L)
+                .userId("test123")
+                .userName("홍길동")
+                .accessToken("test.jwt.token")
+                .build();
+
         given(userService.login(any(LoginRequest.class)))
-                .willReturn(new LoginResponse(1L, "test123", "홍길동"));
+                .willReturn(response);
 
         mockMvc.perform(post("/api/users/login")
                         .with(csrf())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
+                .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.userNo").value(1L))
                 .andExpect(jsonPath("$.userId").value("test123"))
-                .andExpect(jsonPath("$.userName").value("홍길동"));
+                .andExpect(jsonPath("$.userName").value("홍길동"))
+                .andExpect(jsonPath("$.accessToken").value("test.jwt.token"));
     }
 
     @DisplayName("아이디 또는 비밀번호가 틀리면 로그인 실패")

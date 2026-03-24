@@ -1,12 +1,19 @@
 package com.jin.project01.service.user;
 
+import com.jin.project01.dto.user.LoginRequest;
+import com.jin.project01.dto.user.LoginResponse;
 import com.jin.project01.dto.user.SignUpRequest;
 import com.jin.project01.entity.user.User;
+import com.jin.project01.jwt.JwtTokenProvider;
 import com.jin.project01.repository.user.UserRepository;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.platform.commons.util.ReflectionUtils;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -24,6 +31,9 @@ public class UserServiceTest {
 
     @Autowired
     private PasswordEncoder passwordEncoder;
+
+    @Autowired
+    private JwtTokenProvider jwtTokenProvider;
 
     @DisplayName("회원가입 성공")
     @Test
@@ -177,5 +187,69 @@ public class UserServiceTest {
                 userAddr,
                 userAddrDetail
         );
+    }
+
+    @DisplayName("로그인 성공 시 JWT 토큰 생성")
+    @Test
+    void login_success_with_jwt() {
+        // given
+        SignUpRequest signUpRequest = createSignUpRequest(
+                "test123",
+                "홍길동",
+                "1234abcd!",
+                "test@test.com",
+                "01012345678",
+                "12344",
+                "경기도 시흥시",
+                "101동 1001호"
+        );
+
+        userService.signUp(signUpRequest);
+        LoginRequest loginRequest = new LoginRequest(
+                "test123",
+                "1234abcd!"
+        );
+
+        // when
+        LoginResponse response = userService.login(loginRequest);
+
+        // then
+        assertThat(response.getAccessToken()).isNotNull();
+
+        // JWT 검증
+        boolean isValid = jwtTokenProvider.validateToken(response.getAccessToken());
+        assertThat(isValid).isTrue();
+
+        // Claims 확인
+        var claims = jwtTokenProvider.getClaims(response.getAccessToken());
+        assertThat(claims.get("userId")).isEqualTo("test123");
+    }
+
+    @DisplayName("로그인 실패 시 JWT 생성되지 않음")
+    @Test
+    void login_fail_invalidPassword() {
+        // given
+        SignUpRequest request = createSignUpRequest(
+                "test123",
+                "홍길동",
+                "1234abcd!",
+                "test@test.com",
+                "01012345678",
+                "12344",
+                "경기도 시흥시",
+                "101동 1001호"
+        );
+
+        userService.signUp(request);
+
+        LoginRequest loginRequest = new LoginRequest(
+                "test123",
+                "wrongpw"
+        );
+
+        // when & then
+        assertThatThrownBy(() -> userService.login(loginRequest))
+                .isInstanceOf(IllegalStateException.class)
+                .hasMessage("아이디 또는 비밀번호가 올바르지 않습니다.");
     }
 }

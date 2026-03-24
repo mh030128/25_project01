@@ -1,3 +1,7 @@
+jwt:
+  secret: my-super-secret-jwt-key-my-super-secret-jwt-key-2026
+  access-token-expiration: 3600000  # 1시간
+
 spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver

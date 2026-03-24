@@ -6,6 +6,7 @@ import com.jin.project01.dto.user.SignUpRequest;
 import com.jin.project01.entity.user.Role;
 import com.jin.project01.entity.user.User;
 import com.jin.project01.entity.user.UserStatus;
+import com.jin.project01.jwt.JwtTokenProvider;
 import com.jin.project01.repository.user.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -19,6 +20,7 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final JwtTokenProvider jwtTokenProvider;
 
     // 회원가입
     @Transactional
@@ -69,10 +71,17 @@ public class UserService {
             throw new IllegalStateException("아이디 또는 비밀번호가 올바르지 않습니다.");
         }
 
-        return new LoginResponse(
+        String accessToken = jwtTokenProvider.createToken(
                 user.getUserNo(),
                 user.getUserId(),
-                user.getUserName()
+                user.getRole().name()
         );
+
+        return LoginResponse.builder()
+                .userNo(user.getUserNo())
+                .userId(user.getUserId())
+                .userName(user.getUserName())
+                .accessToken(accessToken)
+                .build();
     }
 }
