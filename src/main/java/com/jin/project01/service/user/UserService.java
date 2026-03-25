@@ -49,15 +49,15 @@ public class UserService {
 
     private void validateDuplicateUser(SignUpRequest request) {
         if (userRepository.existsByUserId(request.getUserId())) {
-            throw new IllegalStateException("이미 사용중인 아이디입니다.");
+            throw new IllegalArgumentException("이미 사용중인 아이디입니다.");
         }
 
         if (userRepository.existsByUserEmail(request.getUserEmail())) {
-            throw new IllegalStateException("이미 사용중인 이메일입니다.");
+            throw new IllegalArgumentException("이미 사용중인 이메일입니다.");
         }
 
         if (userRepository.existsByUserPhone(request.getUserPhone())) {
-            throw new IllegalStateException("이미 사용중인 전화번호입니다.");
+            throw new IllegalArgumentException("이미 사용중인 전화번호입니다.");
         }
     }
 
@@ -68,7 +68,7 @@ public class UserService {
                 .orElseThrow(() -> new IllegalArgumentException("아이디 또는 비밀번호가 올바르지 않습니다."));
 
         if (!passwordEncoder.matches(request.getUserPw(), user.getUserPw())) {
-            throw new IllegalStateException("아이디 또는 비밀번호가 올바르지 않습니다.");
+            throw new IllegalArgumentException("아이디 또는 비밀번호가 올바르지 않습니다.");
         }
 
         String accessToken = jwtTokenProvider.createToken(

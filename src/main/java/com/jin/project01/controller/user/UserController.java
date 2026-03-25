@@ -34,16 +34,4 @@ public class UserController {
         LoginResponse response = userService.login(request);
         return ResponseEntity.ok(response);
     }
-
-    // 검증
-    @GetMapping("/me")
-    public ResponseEntity<?> me(Authentication authentication) {
-
-        CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
-
-        return ResponseEntity.ok(Map.of(
-                "userNo", userDetails.getUserNo(),
-                "userId", userDetails.getUserId()
-        ));
-    }
 }

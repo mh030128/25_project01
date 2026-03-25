@@ -45,7 +45,10 @@ public class JwtTokenProvider {
 
     public boolean validateToken(String token) {
         try {
-            Jwts.parser().verifyWith((javax.crypto.SecretKey) key).build().parseSignedClaims(token);
+            Jwts.parser()
+                    .verifyWith(key)
+                    .build()
+                    .parseSignedClaims(token);
             return true;
         } catch (JwtException | IllegalArgumentException e) {
             return false;
@@ -54,13 +57,21 @@ public class JwtTokenProvider {
 
     public Claims getClaims(String token) {
         return Jwts.parser()
-                .verifyWith((javax.crypto.SecretKey) key)
+                .verifyWith(key)
                 .build()
                 .parseSignedClaims(token)
                 .getPayload();
     }
 
+    public Long getUserNo(String token) {
+        return Long.parseLong(getClaims(token).getSubject());
+    }
+
     public String getUserId(String token) {
-        return getClaims(token).getSubject();
+        return getClaims(token).get("userId", String.class);
+    }
+
+    public String getRole(String token) {
+        return getClaims(token).get("role", String.class);
     }
 }
