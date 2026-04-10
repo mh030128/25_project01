@@ -2,6 +2,7 @@ package com.jin.project01.service.user;
 
 import com.jin.project01.dto.user.LoginRequest;
 import com.jin.project01.dto.user.LoginResponse;
+import com.jin.project01.dto.user.MeResponse;
 import com.jin.project01.dto.user.SignUpRequest;
 import com.jin.project01.entity.user.Role;
 import com.jin.project01.entity.user.User;
@@ -62,7 +63,6 @@ public class UserService {
     }
 
     // 로그인
-    @Transactional(readOnly = true)
     public LoginResponse login(LoginRequest request) {
         User user = userRepository.findByUserId(request.getUserId())
                 .orElseThrow(() -> new IllegalArgumentException("아이디 또는 비밀번호가 올바르지 않습니다."));
@@ -82,6 +82,24 @@ public class UserService {
                 .userId(user.getUserId())
                 .userName(user.getUserName())
                 .accessToken(accessToken)
+                .build();
+    }
+    
+    // 로그인 사용자 확인
+    public MeResponse getMyInfo(Long userNo) {
+        User user = userRepository.findById(userNo)
+                .orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없습니다."));
+
+        return MeResponse.builder()
+                .userNo(user.getUserNo())
+                .userId(user.getUserId())
+                .userName(user.getUserName())
+                .userEmail(user.getUserEmail())
+                .userPhone(user.getUserPhone())
+                .userAddrPost(user.getUserAddrPost())
+                .userAddr(user.getUserAddr())
+                .userAddrDetail(user.getUserAddrDetail())
+                .role(user.getRole().name())
                 .build();
     }
 }

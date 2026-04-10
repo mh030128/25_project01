@@ -2,15 +2,19 @@ package com.jin.project01.entity.user;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "users")
 @Getter
-@AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor
 @Builder
+@EntityListeners(AuditingEntityListener.class)
 public class User {
 
     @Id
@@ -27,7 +31,7 @@ public class User {
     @Column(name = "user_pw", nullable = false, length = 255)
     private String userPw;
 
-    @Column(name = "user_email", nullable = false, length = 255)
+    @Column(name = "user_email", nullable = false, unique = true, length = 255)
     private String userEmail;
 
     @Column(name = "user_phone", nullable = false, length = 20)
@@ -50,21 +54,25 @@ public class User {
     @Column(nullable = false)
     private Role role;
 
+    @CreatedDate
     @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;
 
+    @LastModifiedDate
     @Column(name = "updated_at", nullable = false)
     private LocalDateTime updatedAt;
 
-    @PrePersist
-    public void prePersist() {
-        LocalDateTime now = LocalDateTime.now();
-        this.createdAt = now;
-        this.updatedAt = now;
-    }
+//    @PrePersist
+//    public void prePersist() {
+//        LocalDateTime now = LocalDateTime.now();
+//        this.createdAt = now;
+//        this.updatedAt = now;
+//    }
+//
+//    @PreUpdate
+//    public void preUpdate() {
+//        this.updatedAt = LocalDateTime.now();
+//    }
 
-    @PreUpdate
-    public void preUpdate() {
-        this.updatedAt = LocalDateTime.now();
-    }
+
 }

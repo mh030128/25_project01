@@ -6,6 +6,9 @@ import com.jin.project01.dto.user.LoginRequest;
 import com.jin.project01.dto.user.LoginResponse;
 import com.jin.project01.dto.user.SignUpRequest;
 import com.jin.project01.exception.GlobalExceptionHandler;
+import com.jin.project01.jwt.JwtTokenProvider;
+import com.jin.project01.repository.user.UserRepository;
+import com.jin.project01.security.CustomUserDetailsService;
 import com.jin.project01.service.user.UserService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -19,6 +22,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -26,7 +30,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 
 @WebMvcTest(UserController.class)
-@Import({SecurityConfig.class, GlobalExceptionHandler.class})
+@Import({SecurityConfig.class, GlobalExceptionHandler.class, JwtTokenProvider.class, CustomUserDetailsService.class})
 public class UserControllerTest {
 
     @Autowired
@@ -38,7 +42,10 @@ public class UserControllerTest {
     @MockitoBean
     private UserService userService;
 
-    @DisplayName("회원가입 API 성공")
+    @MockitoBean
+    private UserRepository userRepository;
+
+    @DisplayName("회원가입 성공")
     @Test
     void signUp_success() throws Exception {
         // given
@@ -60,6 +67,7 @@ public class UserControllerTest {
                         .with(csrf())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
+                .andDo(print())
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.userNo").value(1L));
     }
@@ -79,12 +87,13 @@ public class UserControllerTest {
         );
 
         given(userService.signUp(any(SignUpRequest.class)))
-                .willThrow(new IllegalStateException("이미 사용중인 아이디입니다."));
+                .willThrow(new IllegalArgumentException("이미 사용중인 아이디입니다."));
 
         mockMvc.perform(post("/api/users/signup")
                         .with(csrf())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
+                .andDo(print())
                 .andExpect(status().isBadRequest())
                 .andExpect(content().string("이미 사용중인 아이디입니다."));
     }
@@ -104,12 +113,13 @@ public class UserControllerTest {
         );
 
         given(userService.signUp(any(SignUpRequest.class)))
-                .willThrow(new IllegalStateException("이미 사용중인 이메일입니다."));
+                .willThrow(new IllegalArgumentException("이미 사용중인 이메일입니다."));
 
         mockMvc.perform(post("/api/users/signup")
                         .with(csrf())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
+                .andDo(print())
                 .andExpect(status().isBadRequest())
                 .andExpect(content().string("이미 사용중인 이메일입니다."));
 
@@ -130,12 +140,13 @@ public class UserControllerTest {
         );
 
         given(userService.signUp(any(SignUpRequest.class)))
-                .willThrow(new IllegalStateException("이미 사용중인 전화번호입니다."));
+                .willThrow(new IllegalArgumentException("이미 사용중인 전화번호입니다."));
 
         mockMvc.perform(post("/api/users/signup")
                         .with(csrf())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
+                .andDo(print())
                 .andExpect(status().isBadRequest())
                 .andExpect(content().string("이미 사용중인 전화번호입니다."));
     }
@@ -179,6 +190,7 @@ public class UserControllerTest {
                         .with(csrf())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
+                .andDo(print())
                 .andExpect(status().isBadRequest())
                 .andExpect(content().string("아이디 또는 비밀번호가 올바르지 않습니다."));
     }

@@ -2,6 +2,7 @@ package com.jin.project01.dto.user;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -14,36 +15,38 @@ import lombok.Setter;
 @AllArgsConstructor
 public class SignUpRequest {
 
-    @NotBlank
-    @Size(max = 30)
+    @NotBlank(message = "아이디를 입력해주세요.")
+    @Size(min = 6, max = 30, message = "아이디는 6~30자 사이로 입력해주세요.")
+    @Pattern(regexp = "^[a-zA-Z0-9_]+$", message = "아이디는 영문, 숫자, 언더스코어만 사용 가능합니다.")
     private String userId;
 
-    @NotBlank
-    @Size(max = 50)
+    @NotBlank(message = "이름을 입력해주세요/")
+    @Size(max = 50, message = "이름은 50자 이하여야 합니다.")
     private String userName;
 
-    @NotBlank
-    @Size(max = 255)
+    @NotBlank(message = "비밀번호를 입력해주세요.")
+    @Size(min = 8, max = 255, message = "비밀번호는 8~20")
     private String userPw;
 
-    @NotBlank
-    @Email
+    @NotBlank(message = "이메일을 입력해주세요.")
+    @Email(message = "이메일 형식이 올바르지 않습니다.")
     @Size(max = 255)
     private String userEmail;
 
-    @NotBlank
+    @NotBlank(message = "전화번호를 입력해주세요.")
     @Size(max = 20)
+    @Pattern(regexp = "^01[016789]-?\\d{3,4}-?\\d{4}$", message = "전화번호 형식이 올바르지 않습니다.")
     private String userPhone;
 
-    @NotBlank
+    @NotBlank(message = "우편변호를 입력해주세요.")
     @Size(max = 10)
     private String userAddrPost;
 
-    @NotBlank
+    @NotBlank(message = "주소를 입력해주세요.")
     @Size(max = 255)
     private String userAddr;
 
-    @NotBlank
+    @NotBlank(message = "상세주소를 입력해주세요.")
     @Size(max = 100)
     private String userAddrDetail;
 
