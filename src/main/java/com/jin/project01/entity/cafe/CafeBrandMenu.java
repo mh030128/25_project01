@@ -9,10 +9,11 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "cafe_brand_menu", uniqueConstraints = @UniqueConstraint(columnNames = {"cafe_brand_no", "cafe_menu_name"}))
+@Table(name = "cafe_brand_menu",
+        uniqueConstraints = @UniqueConstraint(columnNames = {"cafe_brand_no", "cafe_menu_name"}))
 @Getter
-@AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor
 @Builder
 @EntityListeners(AuditingEntityListener.class)
 public class CafeBrandMenu {

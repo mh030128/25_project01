@@ -16,8 +16,8 @@ import java.time.LocalDateTime;
             @Index(name = "idx_like_user", columnList = "user_no")
         })
 @Getter
-@AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor
 @Builder
 @EntityListeners(AuditingEntityListener.class)
 public class CommunityLike {
@@ -38,7 +38,8 @@ public class CommunityLike {
     @CreatedDate
     @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;
-
+    
+    // user null로 변경
     public void clearUser() {
         this.user = null;
     }

@@ -19,8 +19,8 @@ import java.util.List;
             @Index(name = "idx_comment_parent", columnList = "parent_comment_no")
 })
 @Getter
-@AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor
 @Builder
 @EntityListeners(AuditingEntityListener.class)
 public class CommunityComment {
@@ -77,7 +77,8 @@ public class CommunityComment {
         this.deletedAt = LocalDateTime.now();
     }
 
-    public void clearUsre() {
+    // user null로 변경
+    public void clearUser() {
         this.user = null;
     }
 }

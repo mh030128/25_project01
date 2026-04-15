@@ -10,14 +10,14 @@ import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "cafe_branch_bookmark",
-uniqueConstraints = @UniqueConstraint(columnNames = {"user_no", "cafe_branch_no"}),
-indexes = {
-        @Index(name = "idx_cafe_bookmark_user", columnList = "user_no"),
-        @Index(name = "idx_cafe_bookmark_branch", columnList = "cafe_branch_no")
-})
+        uniqueConstraints = @UniqueConstraint(columnNames = {"user_no", "cafe_branch_no"}),
+        indexes = {
+            @Index(name = "idx_cafe_bookmark_user", columnList = "user_no"),
+            @Index(name = "idx_cafe_bookmark_branch", columnList = "cafe_branch_no")
+        })
 @Getter
-@AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor
 @Builder
 @EntityListeners(AuditingEntityListener.class)
 public class CafeBranchBookmark {

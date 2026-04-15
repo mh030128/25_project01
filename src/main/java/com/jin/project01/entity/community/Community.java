@@ -96,4 +96,9 @@ public class Community {
     public void increaseViewCnt() {
         this.communityViewCnt++;
     }
+
+    // user null로 변경
+    public void clearUser() {
+        this.user = null;
+    }
 }

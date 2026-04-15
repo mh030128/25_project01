@@ -9,8 +9,8 @@ import java.util.List;
 @Entity
 @Table(name = "cafe_region")
 @Getter
-@AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor
 @Builder
 public class CafeRegion {
 

@@ -13,8 +13,8 @@ import java.util.List;
 @Entity
 @Table(name = "cafe_brand")
 @Getter
-@AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor
 @Builder
 @EntityListeners(AuditingEntityListener.class)
 public class CafeBrand {
@@ -41,5 +41,5 @@ public class CafeBrand {
 
     @OneToMany(mappedBy = "cafeBrand")
     @Builder.Default
-    private List<CafeBrandMenu> branches = new ArrayList<>();
+    private List<CafeBranch> branches = new ArrayList<>();
 }
