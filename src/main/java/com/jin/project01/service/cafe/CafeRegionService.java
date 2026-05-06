@@ -16,14 +16,14 @@ public class CafeRegionService {
     private final CafeRegionRepository cafeRegionRepository;
 
     // 최상위 지역 조회 => 시/도
-    public List<CafeRegion> getToRegion() {
+    public List<CafeRegion> getSidoList() {
         return cafeRegionRepository.findByParentRegionIsNull();
     }
 
     // 특정 지역 하위 지역 조회
-    public List<CafeRegion> getChildRegions(Long regionNo) {
-        CafeRegion parentRegion = cafeRegionRepository.findById(regionNo)
+    public List<CafeRegion> getSigunguList(Long regionNo) {
+        CafeRegion sido = cafeRegionRepository.findById(regionNo)
                 .orElseThrow(() -> new IllegalArgumentException("지역을 찾을 수 없습니다."));
-        return cafeRegionRepository.findByParentRegion(parentRegion);
+        return cafeRegionRepository.findByParentRegion(sido);
     }
 }

@@ -8,11 +8,15 @@ import java.util.List;
 public interface CafeRegionRepository extends JpaRepository<CafeRegion, Long> {
 
     // 최상위 지역 조회 (parent_region_no is null)
+    /*
+    * 서울, 경기, 인천, 제주 ... 총 17개
+    * */
     List<CafeRegion> findByParentRegionIsNull();
 
     // 특정 지역 하위 조회
+    /*
+    * 서울 -  강남구, 강동구, 강북구 ...
+    * 경기 - 가평군, 고양시 덕양구, 고양시 일산동구, 수원시 분당구, 수원시 수정구 ...
+    * */
     List<CafeRegion> findByParentRegion(CafeRegion parentRegion);
-
-    // 지역 타입으로 조회
-    List<CafeRegion> findByRegionType(String CafeRegionType);
 }
