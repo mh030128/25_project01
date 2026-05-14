@@ -32,8 +32,8 @@ public class CafeRegionController {
 
     // 시/군/구 목록 조회
     @GetMapping("/{regionNo}/sigungu")
-    public ResponseEntity<List<CafeRegionResponse>> getSigunguList(@PathVariable Long cafeRegionNo) {
-        List<CafeRegionResponse> sigunguList = cafeRegionService.getSigunguList(cafeRegionNo)
+    public ResponseEntity<List<CafeRegionResponse>> getSigunguList(@PathVariable Integer regionNo) {
+        List<CafeRegionResponse> sigunguList = cafeRegionService.getSigunguList(regionNo)
                 .stream()
                 .map(CafeRegionResponse::from)
                 .collect(Collectors.toList());

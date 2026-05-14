@@ -41,8 +41,16 @@ public class SecurityConfig {
                 // 경로별 인증 설정
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(
-                        "/api/users/signup",
-                                "/api/users/login"
+                                "/api/users/signup",
+                                "/api/users/login",
+                                "/api/cafe/regions/**",             // 지역 조회
+                                "/api/cafe/brands/**",              // 브랜드 조회
+                                "/api/cafe/brands/*/menus/**",      // 메뉴조회
+                                "/api/cafe/branches/**",            // 지점 조회
+                                "/api/communities",                 // 게시글 목록
+                                "/api/communities/{id}",            // 게시글 상세
+                                "/api/communities/brand/**",        // 브랜드별 게시글
+                                "/api/communities/{id}/comments"    // 댓글 목록
                         ).permitAll()
                         .requestMatchers("/api/admin/**").hasRole("ADMIN")
                         .anyRequest().authenticated()

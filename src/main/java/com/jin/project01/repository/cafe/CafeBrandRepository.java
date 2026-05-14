@@ -5,7 +5,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;
 
-public interface CafeBrandRepository extends JpaRepository {
+public interface CafeBrandRepository extends JpaRepository<CafeBrand, Integer> {
 
     // 브랜드 이름 조회 -> 스타벅스, 투썸, 메가커피 ...
     Optional<CafeBrand> findByCafeBrandName(String cafeBrandName);

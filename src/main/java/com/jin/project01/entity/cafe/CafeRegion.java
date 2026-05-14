@@ -17,7 +17,7 @@ public class CafeRegion {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "cafe_region_no")
-    private Long cafeRegionNo;
+    private Integer cafeRegionNo;
 
     @Column(name = "cafe_region_name", nullable = false, length = 50)
     private String cafeRegionName;

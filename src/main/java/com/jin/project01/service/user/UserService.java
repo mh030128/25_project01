@@ -9,6 +9,10 @@ import com.jin.project01.entity.user.User;
 import com.jin.project01.entity.user.UserStatus;
 import com.jin.project01.jwt.JwtTokenProvider;
 import com.jin.project01.repository.user.UserRepository;
+import com.jin.project01.service.community.CommunityBookmarkService;
+import com.jin.project01.service.community.CommunityCommentService;
+import com.jin.project01.service.community.CommunityLikeService;
+import com.jin.project01.service.community.CommunityService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -22,10 +26,14 @@ public class UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtTokenProvider jwtTokenProvider;
+    private final CommunityService communityService;
+    private final CommunityCommentService communityCommentService;
+    private final CommunityLikeService communityLikeService;
+    private final CommunityBookmarkService communityBookmarkService;
 
     // 회원가입
     @Transactional
-    public Long signUp(SignUpRequest request) {
+    public Integer signUp(SignUpRequest request) {
 
         validateDuplicateUser(request);
 
@@ -44,8 +52,7 @@ public class UserService {
                 .role(Role.USER)
                 .build();
 
-        User saveUser = userRepository.save(user);
-        return saveUser.getUserNo();
+        return userRepository.save(user).getUserNo();
     }
 
     private void validateDuplicateUser(SignUpRequest request) {
@@ -67,6 +74,10 @@ public class UserService {
         User user = userRepository.findByUserId(request.getUserId())
                 .orElseThrow(() -> new IllegalArgumentException("아이디 또는 비밀번호가 올바르지 않습니다."));
 
+        if (user.getUserStatus() != UserStatus.ACTIVE) {
+            throw new IllegalArgumentException("사용 불가능한 계정입니다.");
+        }
+
         if (!passwordEncoder.matches(request.getUserPw(), user.getUserPw())) {
             throw new IllegalArgumentException("아이디 또는 비밀번호가 올바르지 않습니다.");
         }
@@ -85,10 +96,14 @@ public class UserService {
                 .build();
     }
     
-    // 로그인 사용자 확인
-    public MeResponse getMyInfo(Long userNo) {
+    // 내 정보 확인
+    public MeResponse getMyInfo(Integer userNo) {
         User user = userRepository.findById(userNo)
                 .orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없습니다."));
+
+        if (user.getUserStatus() == UserStatus.WITHDRAW) {
+            throw new IllegalArgumentException("탈퇴한 사용자입니다.");
+        }
 
         return MeResponse.builder()
                 .userNo(user.getUserNo())
@@ -101,5 +116,24 @@ public class UserService {
                 .userAddrDetail(user.getUserAddrDetail())
                 .role(user.getRole().name())
                 .build();
+    }
+
+    // 탈퇴처리
+    @Transactional
+    public void withdraw(Integer userNo) {
+        User user = userRepository.findById(userNo)
+                .orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없습니다."));
+
+        // 게시글 작성자 -> null
+        communityService.clearUserFromCommunities(user);
+
+        // 댓글 작성자 -> null
+        communityCommentService.clearUserFromComments(user);
+
+        // 좋아요 작성자 -> null
+        communityLikeService.clearUserFromLikes(user);
+
+        // 북마크 작성자 -> null
+        communityBookmarkService.clearUserFromBookmarks(user);
     }
 }

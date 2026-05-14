@@ -7,7 +7,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
 
-public interface CommunityCommentRepository extends JpaRepository<CommunityComment, Long> {
+public interface CommunityCommentRepository extends JpaRepository<CommunityComment, Integer> {
 
     // 특정 게시글의 최상위 댓글 조회 -> 대댓글 제외
     List<CommunityComment> findByCommunityAndParentCommentIsNullAndIsDeletedFalse(Community community);

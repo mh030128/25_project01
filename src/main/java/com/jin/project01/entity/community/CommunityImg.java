@@ -20,7 +20,7 @@ public class CommunityImg {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "community_img_no")
-    private Long communityImgNo;
+    private Integer communityImgNo;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "community_no", nullable = false)
@@ -31,5 +31,5 @@ public class CommunityImg {
 
     @CreatedDate
     @Column(name = "created_at", nullable = false, updatable = false)
-    private LocalDateTime cratedAt;
+    private LocalDateTime createdAt;
 }

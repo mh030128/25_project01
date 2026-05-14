@@ -10,7 +10,6 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
@@ -25,8 +24,8 @@ public class UserController {
     
     // 회원가입
     @PostMapping("/signup")
-    public ResponseEntity<Map<String, Long>> signUp(@Valid @RequestBody SignUpRequest request) {
-        Long userNo = userService.signUp(request);
+    public ResponseEntity<Map<String, Integer>> signUp(@Valid @RequestBody SignUpRequest request) {
+        Integer userNo = userService.signUp(request);
         return ResponseEntity.status(HttpStatus.CREATED).body(Map.of("userNo", userNo));
     }
     
@@ -44,4 +43,13 @@ public class UserController {
         MeResponse response = userService.getMyInfo(userDetails.getUserNo());
         return ResponseEntity.ok(response);
     }
+
+    // 탈퇴
+    @GetMapping("/withdraw")
+    public ResponseEntity<Void> withdraw(
+            @AuthenticationPrincipal CustomUserDetails userDetails) {
+        userService.withdraw(userDetails.getUserNo());
+        return ResponseEntity.ok().build();
+    }
+
 }

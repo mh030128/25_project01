@@ -6,7 +6,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
 
-public interface CommunityImgRepository extends JpaRepository<CommunityImg, Long> {
+public interface CommunityImgRepository extends JpaRepository<CommunityImg, Integer> {
 
     // 특정 게시글의 이미지 목록 조회
     List<CommunityImg> findByCommunity(Community community);

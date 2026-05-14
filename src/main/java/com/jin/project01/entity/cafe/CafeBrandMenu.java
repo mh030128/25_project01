@@ -1,12 +1,8 @@
 package com.jin.project01.entity.cafe;
 
+import com.jin.project01.common.BaseEntity;
 import jakarta.persistence.*;
 import lombok.*;
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.LastModifiedDate;
-import org.springframework.data.jpa.domain.support.AuditingEntityListener;
-
-import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "cafe_brand_menu",
@@ -15,13 +11,12 @@ import java.time.LocalDateTime;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Builder
-@EntityListeners(AuditingEntityListener.class)
-public class CafeBrandMenu {
+public class CafeBrandMenu extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "cafe_menu_no")
-    private Long cafeMenuNo;
+    private Integer cafeMenuNo;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "cafe_brand_no", nullable = false)
@@ -31,7 +26,7 @@ public class CafeBrandMenu {
     private String cafeMenuName;
 
     @Column(name = "cafe_menu_price", nullable = false)
-    private Long cafeMenuPrice;
+    private Integer cafeMenuPrice;
 
     @Column(name = "cafe_menu_desc", nullable = false, length = 255)
     private String cafeMenuDesc;
@@ -43,15 +38,7 @@ public class CafeBrandMenu {
     @Column(name = "cafe_menu_img", length = 500)
     private String cafeMenuImg;
 
-    @CreatedDate
-    @Column(name = "created_at", nullable = false, updatable = false)
-    private LocalDateTime createdAt;
-
-    @LastModifiedDate
-    @Column(name = "updated_at", nullable = false)
-    private LocalDateTime updatedAt;
-
-    public void updatedStatus(CafeMenuStatus status) {
+    public void updateStatus(CafeMenuStatus status) {
         this.cafeMenuStatus = status;
     }
 

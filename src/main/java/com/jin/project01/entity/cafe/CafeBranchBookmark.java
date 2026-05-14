@@ -25,7 +25,7 @@ public class CafeBranchBookmark {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "cafe_bookmark_no")
-    private Long cafeBookmarkNo;
+    private Integer cafeBookmarkNo;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_no", nullable = false)

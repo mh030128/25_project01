@@ -25,7 +25,7 @@ public class CommunityBookmark {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "community_bookmark_no")
-    private Long communityBookmarkNo;
+    private Integer communityBookmarkNo;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "community_no", nullable = false)

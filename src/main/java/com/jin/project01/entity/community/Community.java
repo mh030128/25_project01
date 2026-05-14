@@ -1,12 +1,10 @@
 package com.jin.project01.entity.community;
 
+import com.jin.project01.common.BaseEntity;
 import com.jin.project01.entity.cafe.CafeBrand;
 import com.jin.project01.entity.user.User;
 import jakarta.persistence.*;
 import lombok.*;
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.LastModifiedDate;
-import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -23,13 +21,12 @@ import java.util.List;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Builder
-@EntityListeners(AuditingEntityListener.class)
-public class Community {
+public class Community extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "community_no")
-    private Long communityNo;
+    private Integer communityNo;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_no", nullable = true)
@@ -56,14 +53,6 @@ public class Community {
     @Column(name = "deleted_at")
     private LocalDateTime deletedAt;
 
-    @CreatedDate
-    @Column(name = "created_at", nullable = false, updatable = false)
-    private LocalDateTime createdAt;
-
-    @LastModifiedDate
-    @Column(name = "updated_at", nullable = false)
-    private LocalDateTime updatedAt;
-
     @OneToMany(mappedBy = "community", cascade = CascadeType.ALL, orphanRemoval = true)
     @Builder.Default
     private List<CommunityImg> images = new ArrayList<>();
@@ -81,7 +70,7 @@ public class Community {
     private List<CommunityBookmark> bookmarks = new ArrayList<>();
 
     // 게시글 수정
-    public void updated(String title, String content) {
+    public void update(String title, String content) {
         this.communityTitle = title;
         this.communityContent = content;
     }

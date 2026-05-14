@@ -1,13 +1,11 @@
 package com.jin.project01.entity.cafe;
 
+import com.jin.project01.common.BaseEntity;
 import jakarta.persistence.*;
 import lombok.*;
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.LastModifiedDate;
-import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
+import java.time.LocalTime;
 
 @Entity
 @Table(name = "cafe_branch")
@@ -15,13 +13,12 @@ import java.time.LocalDateTime;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Builder
-@EntityListeners(AuditingEntityListener.class)
-public class CafeBranch {
+public class CafeBranch extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "cafe_branch_no")
-    private Long cafeBranchNo;
+    private Integer cafeBranchNo;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "cafe_brand_no", nullable = false)
@@ -35,10 +32,10 @@ public class CafeBranch {
     private String cafeBranchName;
 
     @Column(name = "cafe_branch_open", nullable = false)
-    private LocalDateTime cafeBranchOpen;
+    private LocalTime cafeBranchOpen;
 
     @Column(name = "cafe_branch_close", nullable = false)
-    private LocalDateTime cafeBranchClose;
+    private LocalTime cafeBranchClose;
 
     @Column(name = "cafe_branch_addr_post", nullable = false, length = 10)
     private String cafeBranchAddrPost;
@@ -53,19 +50,11 @@ public class CafeBranch {
     @Column(name = "cafe_branch_status", nullable = false)
     private CafeBranchStatus cafeBranchStatus;
 
-    @Column(name = "cafe_brach_lat", precision = 10, scale = 7)
+    @Column(name = "cafe_branch_lat", precision = 10, scale = 7)
     private BigDecimal cafeBranchLat;
 
     @Column(name = "cafe_branch_lng", precision = 10, scale = 7)
     private BigDecimal cafeBranchLng;
-
-    @CreatedDate
-    @Column(name = "created_at", nullable = false, updatable = false)
-    private LocalDateTime createdAt;
-
-    @LastModifiedDate
-    @Column(name = "updated_at", nullable = false)
-    private LocalDateTime updatedAt;
 
     public void updateStatus(CafeBranchStatus status) {
         this.cafeBranchStatus = status;

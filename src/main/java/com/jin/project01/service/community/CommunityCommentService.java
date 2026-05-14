@@ -22,7 +22,7 @@ public class CommunityCommentService {
     private final UserRepository userRepository;
 
     // 특정 게시글의 댓글 목록 조회
-    public List<CommunityComment> getComments(Long communityNo) {
+    public List<CommunityComment> getComments(Integer communityNo) {
         Community community = communityRepository.findByCommunityNoAndIsDeletedFalse(communityNo)
                 .orElseThrow(() -> new IllegalArgumentException("게시글을 찾을 수 없습니다"));
         return communityCommentRepository.findByCommunityAndParentCommentIsNullAndIsDeletedFalse(community);
@@ -30,7 +30,7 @@ public class CommunityCommentService {
 
     // 댓글 등록
     @Transactional
-    public Long createdComment(Long userNo, Long communityNo, String content, Long parentCommentNo) {
+    public Integer createComment(Integer userNo, Integer communityNo, String content, Integer parentCommentNo) {
         User user = userRepository.findById(userNo)
                 .orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없습니다"));
         Community community = communityRepository.findByCommunityNoAndIsDeletedFalse(communityNo)
@@ -38,7 +38,7 @@ public class CommunityCommentService {
 
         // 대댓글인 경우 부모 댓글 조회
         CommunityComment parentComment = null;
-        if (parentComment != null) {
+        if (parentCommentNo != null) {
             parentComment = communityCommentRepository.findById(parentCommentNo)
                     .orElseThrow(() -> new IllegalArgumentException("댓글을 찾을 수 없습니다"));
 
@@ -60,7 +60,7 @@ public class CommunityCommentService {
 
     // 댓글수정
     @Transactional
-    public void updatedComment(Long userNo, Long commentNo, String content) {
+    public void updateComment(Integer userNo, Integer commentNo, String content) {
         CommunityComment comment = communityCommentRepository.findById(commentNo)
                 .orElseThrow(() -> new IllegalArgumentException("댓글을 찾을 수 없습니다."));
 
@@ -74,7 +74,7 @@ public class CommunityCommentService {
 
     // 댓글삭제
     @Transactional
-    public void deletedComment(Long userNo, Long commentNo) {
+    public void deleteComment(Integer userNo, Integer commentNo) {
         CommunityComment comment = communityCommentRepository.findById(commentNo)
                 .orElseThrow(() -> new IllegalArgumentException("댓글을 찾을 수 없습니다."));
 
@@ -88,7 +88,7 @@ public class CommunityCommentService {
 
     // 유저 탈퇴 시 댓글 작성자 null 처리
     @Transactional
-    public void clearUserFromComment(User user) {
+    public void clearUserFromComments(User user) {
         communityCommentRepository.findByUser(user)
                 .forEach(CommunityComment::clearUser);
     }

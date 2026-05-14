@@ -1,11 +1,9 @@
 package com.jin.project01.entity.community;
 
+import com.jin.project01.common.BaseEntity;
 import com.jin.project01.entity.user.User;
 import jakarta.persistence.*;
 import lombok.*;
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.LastModifiedDate;
-import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -22,13 +20,12 @@ import java.util.List;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Builder
-@EntityListeners(AuditingEntityListener.class)
-public class CommunityComment {
+public class CommunityComment extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "community_comment_no")
-    private Long communityCommentNo;
+    private Integer communityCommentNo;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "community_no", nullable = false)
@@ -57,14 +54,6 @@ public class CommunityComment {
 
     @Column(name = "deleted_at")
     private LocalDateTime deletedAt;
-
-    @CreatedDate
-    @Column(name = "created_at", nullable = false, updatable = false)
-    private LocalDateTime createdAt;
-
-    @LastModifiedDate
-    @Column(name = "updated_at", nullable = false)
-    private LocalDateTime updatedAt;
 
     // 댓글 수정
     public void update(String content) {

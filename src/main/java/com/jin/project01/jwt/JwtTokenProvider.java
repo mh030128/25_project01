@@ -19,7 +19,7 @@ public class JwtTokenProvider {
     private String secretKey;
 
     @Value("${jwt.access-token-expiration}")
-    private long accessTokenExpiration;
+    private Integer accessTokenExpiration;
 
     private SecretKey key;
 
@@ -28,7 +28,7 @@ public class JwtTokenProvider {
         this.key = Keys.hmacShaKeyFor(secretKey.getBytes(StandardCharsets.UTF_8));
     }
 
-    public String createToken(Long userNo, String userId, String role) {
+    public String createToken(Integer userNo, String userId, String role) {
         Date now = new Date();
         Date expiry = new Date(now.getTime() + accessTokenExpiration);
 
@@ -62,8 +62,8 @@ public class JwtTokenProvider {
                 .getPayload();
     }
 
-    public Long getUserNo(String token) {
-        return Long.parseLong(getClaims(token).getSubject());
+    public Integer getUserNo(String token) {
+        return Integer.parseInt(getClaims(token).getSubject());
     }
 
     public String getUserId(String token) {

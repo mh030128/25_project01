@@ -1,76 +1,77 @@
 package com.jin.project01.service.community;
 
 import com.jin.project01.entity.community.Community;
-import com.jin.project01.entity.community.CommunityLike;
+import com.jin.project01.entity.community.CommunityBookmark;
 import com.jin.project01.entity.user.User;
-import com.jin.project01.repository.community.CommunityLikeRepository;
+import com.jin.project01.repository.community.CommunityBookmarkRepository;
 import com.jin.project01.repository.community.CommunityRepository;
 import com.jin.project01.repository.user.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
-public class CommunityLikeService {
+public class CommunityBookmarkService {
 
     private final UserRepository userRepository;
     private final CommunityRepository communityRepository;
-    private final CommunityLikeRepository communityLikeRespository;
+    private final CommunityBookmarkRepository communityBookmarkRepository;
 
-
-    // 좋아요 여부 확인
-    public boolean isLiked(Integer userNo, Integer communityNo) {
+    // 북마크 여부 확인
+    public boolean isBookmarked(Integer userNo, Integer communityNo) {
         User user = userRepository.findById(userNo)
                 .orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없습니다."));
         Community community = communityRepository.findByCommunityNoAndIsDeletedFalse(communityNo)
                 .orElseThrow(() -> new IllegalArgumentException("게시글을 찾을 수 없습니다."));
-        return communityLikeRespository.existsByCommunityAndUser(community, user);
+        return communityBookmarkRepository.existsByCommunityAndUser(community, user);
     }
 
-    // 좋아요 수 확인
-    public Integer getLikeCount(Integer communityNo) {
-        Community community = communityRepository.findByCommunityNoAndIsDeletedFalse(communityNo)
-                .orElseThrow(() -> new IllegalArgumentException("게시글을 찾을 수 없습니다."));
-        return communityLikeRespository.countByCommunity(community);
+    // 나의 북마크 조회
+    public List<CommunityBookmark> getMyBookmarks(Integer userNo) {
+        User user = userRepository.findById(userNo)
+                .orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없습니다."));
+        return communityBookmarkRepository.findByUser(user);
     }
 
-    // 좋아요 추가
+    // 북마크 추가
     @Transactional
-    public void addLike(Integer userNo, Integer communityNo) {
+    public void addBookmark(Integer userNo, Integer communityNo) {
         User user = userRepository.findById(userNo)
                 .orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없습니다."));
         Community community = communityRepository.findByCommunityNoAndIsDeletedFalse(communityNo)
                 .orElseThrow(() -> new IllegalArgumentException("게시글을 찾을 수 없습니다."));
-
-        if (communityLikeRespository.existsByCommunityAndUser(community, user)) {
-            throw new IllegalArgumentException("이미 좋아요 한 게시글입니다.");
+        if (communityBookmarkRepository.existsByCommunityAndUser(community, user)) {
+            throw new IllegalArgumentException("이미 북마크한 게시글입니다.");
         }
 
-        CommunityLike like = CommunityLike.builder()
+        CommunityBookmark bookmark = CommunityBookmark.builder()
                 .user(user)
                 .community(community)
                 .build();
-        communityLikeRespository.save(like);
+
+        communityBookmarkRepository.save(bookmark);
     }
 
-    // 좋아요 취소
+    // 북마크 취소
     @Transactional
-    public void removeLike(Integer userNo, Integer communityNo) {
+    public void removeBookmark(Integer userNo, Integer communityNo) {
         User user = userRepository.findById(userNo)
                 .orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없습니다."));
         Community community = communityRepository.findByCommunityNoAndIsDeletedFalse(communityNo)
                 .orElseThrow(() -> new IllegalArgumentException("게시글을 찾을 수 없습니다."));
-        CommunityLike like = communityLikeRespository.findByCommunityAndUser(community, user)
-                .orElseThrow(() -> new IllegalArgumentException("좋아요 내역을 찾을 수 없습니다."));
-        communityLikeRespository.delete(like);
+        CommunityBookmark bookmark = communityBookmarkRepository.findByCommunityAndUser(community, user)
+                .orElseThrow(() -> new IllegalArgumentException("북마크 내역을 찾을 수 없습니다."));
+        communityBookmarkRepository.delete(bookmark);
     }
 
-    // 유저 탈퇴 시 작성자 null 처리
+    // 유저 탈퇴 시 북마크 작성자 null 처리
     @Transactional
-    public void clearUserFromLikes(User user) {
-        communityLikeRespository.findByUser(user)
-                .forEach(CommunityLike::clearUser);
+    public void clearUserFromBookmarks(User user) {
+        communityBookmarkRepository.findByUser(user)
+                .forEach(CommunityBookmark::clearUser);
     }
 }

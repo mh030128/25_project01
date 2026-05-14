@@ -8,7 +8,7 @@ import lombok.Getter;
 @Builder
 public class CafeRegionResponse {
 
-    private Long cafeRegionNo;
+    private Integer cafeRegionNo;
     private String cafeRegionName;
 
     // Entity -> DTO

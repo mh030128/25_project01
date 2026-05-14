@@ -8,7 +8,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
 
-public interface CafeBranchInterface extends JpaRepository {
+public interface CafeBranchRepository extends JpaRepository<CafeBranch, Integer> {
 
     // 특정 브랜드의 전체 지점 조회
     List<CafeBranch> findByCafeBrand(CafeBrand cafeBrand);

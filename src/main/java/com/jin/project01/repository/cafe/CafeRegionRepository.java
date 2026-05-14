@@ -5,7 +5,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
 
-public interface CafeRegionRepository extends JpaRepository<CafeRegion, Long> {
+public interface CafeRegionRepository extends JpaRepository<CafeRegion, Integer> {
 
     // 최상위 지역 조회 (parent_region_no is null)
     /*

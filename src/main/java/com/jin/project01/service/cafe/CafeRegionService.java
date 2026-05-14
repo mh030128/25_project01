@@ -21,7 +21,7 @@ public class CafeRegionService {
     }
 
     // 특정 지역 하위 지역 조회
-    public List<CafeRegion> getSigunguList(Long regionNo) {
+    public List<CafeRegion> getSigunguList(Integer regionNo) {
         CafeRegion sido = cafeRegionRepository.findById(regionNo)
                 .orElseThrow(() -> new IllegalArgumentException("지역을 찾을 수 없습니다."));
         return cafeRegionRepository.findByParentRegion(sido);

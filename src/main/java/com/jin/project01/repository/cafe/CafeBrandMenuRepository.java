@@ -8,7 +8,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 import java.util.Optional;
 
-public interface CafeBrandMenuRepository extends JpaRepository {
+public interface CafeBrandMenuRepository extends JpaRepository<CafeBrandMenu, Integer> {
 
     // 특정 브랜드 메뉴 조회
     List<CafeBrandMenu> findByCafeBrand(CafeBrand cafeBrand);

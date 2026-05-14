@@ -21,14 +21,14 @@ public class CafeBrandService {
     }
 
     // 브랜드 단건 조회
-    public CafeBrand getBrand(Long brandNo) {
+    public CafeBrand getBrand(Integer brandNo) {
         return cafeBrandRepository.findById(brandNo)
                 .orElseThrow(() -> new IllegalArgumentException("브랜드를 찾을 수 없습니다."));
     }
 
     // 브랜드 추가
     @Transactional
-    public Long createBrand(String brandName) {
+    public Integer createBrand(String brandName) {
         if (cafeBrandRepository.existsByCafeBrandName(brandName)) {
             throw new IllegalArgumentException("이미 존재하는 브랜드입니다.");
         }

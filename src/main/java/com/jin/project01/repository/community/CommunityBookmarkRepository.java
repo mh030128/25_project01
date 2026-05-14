@@ -8,7 +8,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 import java.util.Optional;
 
-public interface CommunityBookmarkRepository extends JpaRepository<CommunityBookmark, Long> {
+public interface CommunityBookmarkRepository extends JpaRepository<CommunityBookmark, Integer> {
 
     // 북마크 여부 확인
     boolean existsByCommunityAndUser(Community community, User user);

@@ -20,14 +20,14 @@ public class CafeBrandMenuService {
     private final CafeBrandRepository cafeBrandRepository;
 
     // 특정 브랜드의 전체 메뉴 조회
-    public List<CafeBrandMenu> getMenusBrand(Long brandNo) {
+    public List<CafeBrandMenu> getMenusByBrand(Integer brandNo) {
         CafeBrand brand = cafeBrandRepository.findById(brandNo)
                 .orElseThrow(() -> new IllegalArgumentException("브랜드를 찾을 수 없습니다."));
         return cafeBrandMenuRepository.findByCafeBrand(brand);
     }
 
     // 특정 브랜드의 판매 중인 메뉴만 조회
-    public List<CafeBrandMenu> getInStockMenusByBrand(Long brandNo) {
+    public List<CafeBrandMenu> getInStockMenusByBrand(Integer brandNo) {
         CafeBrand brand = cafeBrandRepository.findById(brandNo)
                 .orElseThrow(() -> new IllegalArgumentException("브랜드를 찾을 수 없습니다."));
         return cafeBrandMenuRepository.findByCafeBrandAndCafeMenuStatus(brand, CafeMenuStatus.IN_STOCK);

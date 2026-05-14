@@ -1,12 +1,9 @@
 package com.jin.project01.entity.user;
 
+import com.jin.project01.common.BaseEntity;
 import jakarta.persistence.*;
 import lombok.*;
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
-
-import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "users")
@@ -14,13 +11,12 @@ import java.time.LocalDateTime;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Builder
-@EntityListeners(AuditingEntityListener.class)
-public class User {
+public class User extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "user_no")
-    private Long userNo;
+    private Integer userNo;
 
     @Column(name = "user_id", nullable = false, unique = true, length = 30)
     private String userId;
@@ -54,12 +50,12 @@ public class User {
     @Column(nullable = false)
     private Role role;
 
-    @CreatedDate
-    @Column(name = "created_at", nullable = false, updatable = false)
-    private LocalDateTime createdAt;
+    public void withdraw() {
+        this.userStatus = UserStatus.WITHDRAW;
+    }
 
-    @LastModifiedDate
-    @Column(name = "updated_at", nullable = false)
-    private LocalDateTime updatedAt;
+    public void changePassword(String encodedPw) {
+        this.userPw = encodedPw;
+    }
 
 }

@@ -25,7 +25,7 @@ public class CommunityLike {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "community_like_no")
-    private Long communityLikeNo;
+    private Integer communityLikeNo;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "community_no", nullable = false)

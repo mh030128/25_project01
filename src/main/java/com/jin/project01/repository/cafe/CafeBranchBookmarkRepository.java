@@ -8,13 +8,13 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 import java.util.Optional;
 
-public interface CafeBranchBookmarkRepository extends JpaRepository {
+public interface CafeBranchBookmarkRepository extends JpaRepository<CafeBranchBookmark, Integer> {
 
     // 특정 유저의 즐겨찾기 목록 조회
     List<CafeBranchBookmark> findByUser(User user);
 
     // 특정 지점의 즐겨찾기 수 조회
-    long countByCafeBranch(CafeBranch cafeBranch);
+    Integer countByCafeBranch(CafeBranch cafeBranch);
 
     // 특정 유저가 특정 지점을 즐겨찾기 했는지 확인
     boolean existsByUserAndCafeBranch(User user, CafeBranch cafeBranch);

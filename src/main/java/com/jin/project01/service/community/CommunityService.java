@@ -30,26 +30,26 @@ public class CommunityService {
     }
 
     // 게시글 단건 조회
-    public Community getCommunity(Long communityNo) {
+    public Community getCommunity(Integer communityNo) {
         return communityRepository.findByCommunityNoAndIsDeletedFalse(communityNo)
                 .orElseThrow(() -> new IllegalArgumentException("게시글을 찾을 수 없습니다."));
     }
 
     // 특정 유저의 게시글 조회
-    public List<Community> getMyCommunities(Long userNo) {
+    public List<Community> getMyCommunities(Integer userNo) {
         User user = userRepository.findById(userNo)
                 .orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없습니다."));
         return communityRepository.findByUserAndIsDeletedFalse(user);
     }
 
     // 특정 브랜드의 게시글 조회
-    public List<Community> getCommunitiesByBrand(Long cafeBrandNo) {
+    public List<Community> getCommunitiesByBrand(Integer cafeBrandNo) {
         return communityRepository.findByCafeBrandCafeBrandNoAndIsDeletedFalse(cafeBrandNo);
     }
 
     // 게시글 등록
     @Transactional
-    public Long createCommunity(Long userNo, Long cafeBrandNo, String title, String content, List<String> imgUrls) {
+    public Integer createCommunity(Integer userNo, Integer cafeBrandNo, String title, String content, List<String> imgUrls) {
         User user = userRepository.findById(userNo)
                 .orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없습니다."));
         CafeBrand cafeBrand = cafeBrandRepository.findById(cafeBrandNo)
@@ -79,7 +79,7 @@ public class CommunityService {
 
     // 게시글 수정
     @Transactional
-    public void updatedCommunity(Long userNo, Long communityNo, String title, String content) {
+    public void updateCommunity(Integer userNo, Integer communityNo, String title, String content) {
         Community community = communityRepository.findByCommunityNoAndIsDeletedFalse(communityNo)
                 .orElseThrow(() -> new IllegalArgumentException("게시글을 찾을 수 없습니다."));
 
@@ -88,12 +88,12 @@ public class CommunityService {
             throw new IllegalArgumentException("수정 권한이 없습니다.");
         }
 
-        community.updated(title, content);
+        community.update(title, content);
     }
 
     // 게시글 삭제 (소프트 딜리트)
     @Transactional
-    public void deletedCommunity(Long userNo, Long communityNo) {
+    public void deleteCommunity(Integer userNo, Integer communityNo) {
         Community community = communityRepository.findByCommunityNoAndIsDeletedFalse(communityNo)
                 .orElseThrow(() -> new IllegalArgumentException("게시글을 찾을 수 없습니다."));
 
@@ -107,7 +107,7 @@ public class CommunityService {
 
     // 조회수 증가
     @Transactional
-    public void increasedViewCnt(Long communityNo) {
+    public void increaseViewCnt(Integer communityNo) {
         Community community = communityRepository.findByCommunityNoAndIsDeletedFalse(communityNo)
                 .orElseThrow(() -> new IllegalArgumentException("게시글을 찾을 수 없습니다."));
         community.increaseViewCnt();
