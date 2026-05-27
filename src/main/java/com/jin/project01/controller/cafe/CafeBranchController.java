@@ -8,17 +8,18 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
-@Controller
+@RestController
 @RequestMapping("/api/cafe/branches")
 @RequiredArgsConstructor
 public class CafeBranchController {
 
-    private CafeBranchService cafeBranchService;
+    private final CafeBranchService cafeBranchService;
 
     // 특정 브랜드의 지점 찾기
     @GetMapping("/brand/{brandNo}")

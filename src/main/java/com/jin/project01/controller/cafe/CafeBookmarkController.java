@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
 
-@Controller
+@RestController
 @RequestMapping("/api/cafe/branches/{branchNo}/bookmarks")
 @RequiredArgsConstructor
 public class CafeBookmarkController {
