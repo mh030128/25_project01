@@ -2,6 +2,7 @@ package com.jin.project01.entity.community;
 
 import com.jin.project01.common.BaseEntity;
 import com.jin.project01.entity.cafe.CafeBrand;
+import com.jin.project01.entity.cafe.CafeBrandMenu;
 import com.jin.project01.entity.user.User;
 import jakarta.persistence.*;
 import lombok.*;
@@ -33,8 +34,8 @@ public class Community extends BaseEntity {
     private User user;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "cafe_brand_no", nullable = false)
-    private CafeBrand cafeBrand;
+    @JoinColumn(name = "cafe_menu_no", nullable = false)
+    private CafeBrandMenu cafeBrandMenu;
 
     @Column(name = "community_title", nullable = false, length = 100)
     private String communityTitle;

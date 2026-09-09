@@ -7,6 +7,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -40,18 +41,29 @@ public class SecurityConfig {
 
                 // 경로별 인증 설정
                 .authorizeHttpRequests(auth -> auth
+                        // 회원가입, 로그인_메서드 상관없이 공개_GET이 따로 없음
                         .requestMatchers(
                                 "/api/users/signup",
-                                "/api/users/login",
+                                "/api/users/login"
+                        ).permitAll()
+
+                        // 조회만 공개
+                        .requestMathers(HttpMethod.GET,
                                 "/api/cafe/regions/**",             // 지역 조회
-                                "/api/cafe/brands/**",              // 브랜드 조회
+                                "/api/cafe/brands",                 // 브랜드 목록
+                                "/api/cafe/brands/*",               // 브랜드 상세
                                 "/api/cafe/brands/*/menus/**",      // 메뉴조회
                                 "/api/cafe/branches/**",            // 지점 조회
                                 "/api/communities",                 // 게시글 목록
                                 "/api/communities/{id}",            // 게시글 상세
                                 "/api/communities/brand/**",        // 브랜드별 게시글
+                                "/api/communities/menu/**",         // 메뉴별 게시글
                                 "/api/communities/{id}/comments"    // 댓글 목록
                         ).permitAll()
+
+                        // 브랜드 등록은 관리자만
+                        .requesMathers(HttpMethod.POST, "/api/cafe/brands").hasRole("ADMIN")
+
                         .requestMatchers("/api/admin/**").hasRole("ADMIN")
                         .anyRequest().authenticated()
                 )

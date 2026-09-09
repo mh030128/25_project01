@@ -64,6 +64,8 @@ public class CommunityController {
         return ResponseEntity.ok(communities);
     }
 
+    // 특정 메뉴 게시글 조회
+
      // 내 게시글 조회
     @GetMapping("/my")
     public ResponseEntity<List<CommunityListResponse>> getMyCommunities(@AuthenticationPrincipal CustomUserDetails userDetails) {
@@ -120,5 +122,6 @@ public class CommunityController {
 
         return ResponseEntity.ok().build();
     }
+
 
 }

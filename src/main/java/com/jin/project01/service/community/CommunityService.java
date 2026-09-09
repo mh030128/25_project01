@@ -1,9 +1,11 @@
 package com.jin.project01.service.community;
 
 import com.jin.project01.entity.cafe.CafeBrand;
+import com.jin.project01.entity.cafe.CafeBrandMenu;
 import com.jin.project01.entity.community.Community;
 import com.jin.project01.entity.community.CommunityImg;
 import com.jin.project01.entity.user.User;
+import com.jin.project01.repository.cafe.CafeBrandMenuRepository;
 import com.jin.project01.repository.cafe.CafeBrandRepository;
 import com.jin.project01.repository.community.CommunityImgRepository;
 import com.jin.project01.repository.community.CommunityRepository;
@@ -22,7 +24,7 @@ public class CommunityService {
     private final CommunityRepository communityRepository;
     private final CommunityImgRepository communityImgRepository;
     private final UserRepository userRepository;
-    private final CafeBrandRepository cafeBrandRepository;
+    private final CafeBrandMenuRepository cafeBrandMenuRepository;
 
     // 전체 게시글 조회
     public List<Community> getAllCommunities() {
@@ -44,20 +46,20 @@ public class CommunityService {
 
     // 특정 브랜드의 게시글 조회
     public List<Community> getCommunitiesByBrand(Integer cafeBrandNo) {
-        return communityRepository.findByCafeBrandCafeBrandNoAndIsDeletedFalse(cafeBrandNo);
+        return communityRepository.findByCafeBrandMenuCafeBrandCafeBrandNoAndIsDeletedFalse(cafeBrandNo);
     }
 
     // 게시글 등록
     @Transactional
-    public Integer createCommunity(Integer userNo, Integer cafeBrandNo, String title, String content, List<String> imgUrls) {
+    public Integer createCommunity(Integer userNo, Integer cafeMenuNo, String title, String content, List<String> imgUrls) {
         User user = userRepository.findById(userNo)
                 .orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없습니다."));
-        CafeBrand cafeBrand = cafeBrandRepository.findById(cafeBrandNo)
-                .orElseThrow(() -> new IllegalArgumentException("브랜드를 찾을 수 없습니다"));
+        CafeBrandMenu cafeBrandMenu = cafeBrandMenuRepository.findById(cafeMenuNo)
+                .orElseThrow(() -> new IllegalArgumentException("메뉴를 찾을 수 없습니다"));
 
         Community community = Community.builder()
                 .user(user)
-                .cafeBrand(cafeBrand)
+                .cafeBrandMenu(cafeBrandMenu)
                 .communityTitle(title)
                 .communityContent(content)
                 .build();
@@ -118,5 +120,9 @@ public class CommunityService {
     public void clearUserFromCommunities(User user) {
         communityRepository.findByUserAndIsDeletedFalse(user)
                 .forEach(Community::clearUser);
+    }
+
+    public List<Community> getCommunitiesByMenu(Integer cafeMenuNo) {
+        return communityRepository.findByCafeBrandMenuCafeMenuNoAndIsDeletedFalse(cafeMenuNo);
     }
 }

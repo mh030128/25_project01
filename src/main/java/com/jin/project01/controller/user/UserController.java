@@ -36,7 +36,7 @@ public class UserController {
         return ResponseEntity.ok(response);
     }
     
-    // 로그인 사용자 확인
+    // 로그인 사용자 확인_내 정보 확인
     @GetMapping("/me")
     public ResponseEntity<MeResponse> me(
             @AuthenticationPrincipal CustomUserDetails userDetails) {
@@ -44,7 +44,7 @@ public class UserController {
         return ResponseEntity.ok(response);
     }
 
-    // 탈퇴
+    // 회원 탈퇴
     @GetMapping("/withdraw")
     public ResponseEntity<Void> withdraw(
             @AuthenticationPrincipal CustomUserDetails userDetails) {
