@@ -49,11 +49,13 @@ public class SecurityConfig {
 
                         // 조회만 공개
                         .requestMatchers(HttpMethod.GET,
-                                "/api/cafe/regions/**",             // 지역 조회
+                                "/api/cafe/regions/**",    // 지역 조회
                                 "/api/cafe/brands",                 // 브랜드 목록
                                 "/api/cafe/brands/*",               // 브랜드 상세
                                 "/api/cafe/brands/*/menus/**",      // 메뉴조회
-                                "/api/cafe/branches/**",            // 지점 조회
+                                "/api/cafe/branches/{branchNo}",    // 지점 단건 조회
+                                "/api/cafe/branches/brand/**",      // 브랜드별 지점 조회
+                                "/api/cafe/branches/region/**",     // 지역별 지점 조회
                                 "/api/communities",                 // 게시글 목록
                                 "/api/communities/{id}",            // 게시글 상세
                                 "/api/communities/brand/**",        // 브랜드별 게시글

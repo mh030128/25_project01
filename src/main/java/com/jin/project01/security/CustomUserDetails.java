@@ -1,6 +1,7 @@
 package com.jin.project01.security;
 
 import com.jin.project01.entity.user.User;
+import com.jin.project01.entity.user.UserStatus;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -40,5 +41,7 @@ public class CustomUserDetails implements UserDetails {
     @Override public boolean isAccountNonExpired() { return true; }
     @Override public boolean isAccountNonLocked() { return true; }
     @Override public boolean isCredentialsNonExpired() { return true; }
-    @Override public boolean isEnabled() { return true; }
+
+    // 탈퇴, 정지, 비활성 계정은 기존에 발급된 토큰이 만료되기 전이라도 인증되지 않도록 함
+    @Override public boolean isEnabled() { return user.getUserStatus() == UserStatus.ACTIVE; }
 }
