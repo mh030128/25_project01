@@ -26,7 +26,7 @@ public class CommunityListResponse {
         return CommunityListResponse.builder()
                 .communityNo(community.getCommunityNo())
                 .authorName(community.getUser() != null ? community.getUser().getUserName() : "탈퇴한 사용자")
-                .cafeBrandName(community.getCafeBrand().getCafeBrandName())
+                .cafeBrandName(community.getCafeBrandMenu().getCafeBrand().getCafeBrandName())
                 .communityTitle(community.getCommunityTitle())
                 .communityViewCnt(community.getCommunityViewCnt())
                 .likeCount(likeCount)

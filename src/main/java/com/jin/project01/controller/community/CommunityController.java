@@ -87,7 +87,7 @@ public class CommunityController {
             @Valid @RequestBody CommunityRequest request) {
         Integer communityNo = communityService.createCommunity(
                 userDetails.getUserNo(),
-                request.getCafeBrandNo(),
+                request.getCafeMenuNo(),
                 request.getCommunityTitle(),
                 request.getCommunityContent(),
                 request.getImgUrls()

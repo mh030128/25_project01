@@ -48,7 +48,7 @@ public class SecurityConfig {
                         ).permitAll()
 
                         // 조회만 공개
-                        .requestMathers(HttpMethod.GET,
+                        .requestMatchers(HttpMethod.GET,
                                 "/api/cafe/regions/**",             // 지역 조회
                                 "/api/cafe/brands",                 // 브랜드 목록
                                 "/api/cafe/brands/*",               // 브랜드 상세
@@ -62,7 +62,7 @@ public class SecurityConfig {
                         ).permitAll()
 
                         // 브랜드 등록은 관리자만
-                        .requesMathers(HttpMethod.POST, "/api/cafe/brands").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.POST, "/api/cafe/brands").hasRole("ADMIN")
 
                         .requestMatchers("/api/admin/**").hasRole("ADMIN")
                         .anyRequest().authenticated()
