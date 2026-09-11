@@ -1,13 +1,16 @@
 jwt:
-  secret: my-super-secret-jwt-key-my-super-secret-jwt-key-2026
-  access-token-expiration: 3600000  # 1시간
+  secret: ${JWT_SECRET}
+  access-token-expiration: ${JWT_ACCESS_EXPIRATION:3600000}  # 1시간
 
 spring:
+  config:
+    import: optional:classpath:application-local.yml
+
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/project01?serverTimezone=UTC&characterEncoding=UTF-8
-    username: root
-    password: 2937
+    url: ${DB_URL:jdbc:mysql://localhost:3306/project01?serverTimezone=UTC&characterEncoding=UTF-8}
+    username: ${DB_USERNAME:root}
+    password: ${DB_PASSWORD}
 
   jpa:
     database: mysql
