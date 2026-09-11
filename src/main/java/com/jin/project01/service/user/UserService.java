@@ -124,6 +124,8 @@ public class UserService {
         User user = userRepository.findById(userNo)
                 .orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없습니다."));
 
+        user.withdraw();
+
         // 게시글 작성자 -> null
         communityService.clearUserFromCommunities(user);
 
