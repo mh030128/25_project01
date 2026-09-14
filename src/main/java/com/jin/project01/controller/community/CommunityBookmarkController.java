@@ -19,23 +19,6 @@ import java.util.stream.Collectors;
 public class CommunityBookmarkController {
 
     private final CommunityBookmarkService communityBookmarkService;
-    private final CommunityLikeService communityLikeService;
-
-    // 내 북마크 목록 조회
-    @GetMapping("/my")
-    public ResponseEntity<List<CommunityListResponse>> getMyBookmarks(
-            @AuthenticationPrincipal CustomUserDetails userDetails,
-            @PathVariable Integer communityNo) {
-        List<CommunityListResponse> bookmarks = communityBookmarkService.getMyBookmarks(userDetails.getUserNo())
-                .stream()
-                .map(bookmark -> CommunityListResponse.from(
-                        bookmark.getCommunity(),
-                        communityLikeService.getLikeCount(
-                                bookmark.getCommunity().getCommunityNo())
-                ))
-                .collect(Collectors.toList());
-        return ResponseEntity.ok(bookmarks);
-    }
 
     // 북마크 여부 확인
     @GetMapping

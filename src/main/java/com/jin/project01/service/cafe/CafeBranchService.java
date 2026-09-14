@@ -4,6 +4,7 @@ import com.jin.project01.entity.cafe.CafeBranch;
 import com.jin.project01.entity.cafe.CafeBranchStatus;
 import com.jin.project01.entity.cafe.CafeBrand;
 import com.jin.project01.entity.cafe.CafeRegion;
+import com.jin.project01.exception.NotFoundException;
 import com.jin.project01.repository.cafe.CafeBranchRepository;
 import com.jin.project01.repository.cafe.CafeBrandRepository;
 import com.jin.project01.repository.cafe.CafeRegionRepository;
@@ -27,30 +28,30 @@ public class CafeBranchService {
     // 특정 브랜드의 전체 지점 조회
     public List<CafeBranch> getBranchesByBrand(Integer brandNo) {
         CafeBrand brand = cafeBrandRepository.findById(brandNo)
-                .orElseThrow(() -> new IllegalArgumentException("브랜드를 찾을 수 없습니다."));
+                .orElseThrow(() -> new NotFoundException("브랜드를 찾을 수 없습니다."));
         return cafeBranchRepository.findByCafeBrand(brand);
     }
 
     // 특정 지역의 전체 지점 조회
     public List<CafeBranch> getBranchesByRegion(Integer regionNo) {
         CafeRegion region = cafeRegionRepository.findById(regionNo)
-                .orElseThrow(() -> new IllegalArgumentException("지역을 찾을 수 없습니다."));
+                .orElseThrow(() -> new NotFoundException("지역을 찾을 수 없습니다."));
         return cafeBranchRepository.findByCafeRegion(region);
     }
 
     // 특정 브랜드와 특정 지역 지점 조회
     public List<CafeBranch> getBranchesByBrandAndRegion(Integer brandNo, Integer regionNo) {
         CafeBrand brand = cafeBrandRepository.findById(brandNo)
-                .orElseThrow(() -> new IllegalArgumentException("브랜드를 찾을 수 없습니다."));
+                .orElseThrow(() -> new NotFoundException("브랜드를 찾을 수 없습니다."));
         CafeRegion region = cafeRegionRepository.findById(regionNo)
-                .orElseThrow(() -> new IllegalArgumentException("지역을 찾을 수 없습니다."));
+                .orElseThrow(() -> new NotFoundException("지역을 찾을 수 없습니다."));
         return cafeBranchRepository.findByCafeBrandAndCafeRegion(brand, region);
     }
 
     // 지점 단건 조회
     public CafeBranch getBranch(Integer branchNo) {
         return cafeBranchRepository.findById(branchNo)
-                .orElseThrow(() -> new IllegalArgumentException("지점을 찾을 수 없습니다."));
+                .orElseThrow(() -> new NotFoundException("지점을 찾을 수 없습니다."));
     }
 
     // 지점 등록
@@ -60,9 +61,9 @@ public class CafeBranchService {
                                 String addr, String addrDetail, CafeBranchStatus status,
                                 BigDecimal lat, BigDecimal lng) {
         CafeBrand brand = cafeBrandRepository.findById(brandNo)
-                .orElseThrow(() -> new IllegalArgumentException("브랜드를 찾을 수 없습니다."));
+                .orElseThrow(() -> new NotFoundException("브랜드를 찾을 수 없습니다."));
         CafeRegion region = cafeRegionRepository.findById(regionNo)
-                .orElseThrow(() -> new IllegalArgumentException("지역을 찾을 수 없습니다."));
+                .orElseThrow(() -> new NotFoundException("지역을 찾을 수 없습니다."));
         CafeBranch branch = CafeBranch.builder()
                 .cafeBrand(brand)
                 .cafeRegion(region)
@@ -83,7 +84,7 @@ public class CafeBranchService {
     @Transactional
     public void updateBranchStatus(Integer branchNo, CafeBranchStatus status) {
         CafeBranch branch = cafeBranchRepository.findById(branchNo)
-                .orElseThrow(() -> new IllegalArgumentException("지점을 찾을 수 없습니다."));
+                .orElseThrow(() -> new NotFoundException("지점을 찾을 수 없습니다."));
         branch.updateStatus(status);
     }
 
@@ -91,7 +92,7 @@ public class CafeBranchService {
     @Transactional
     public void updateBranchLocation(Integer branchNo, BigDecimal lat, BigDecimal lng) {
         CafeBranch branch = cafeBranchRepository.findById(branchNo)
-                .orElseThrow(() -> new IllegalArgumentException("지점을 찾을 수 없습니다."));
+                .orElseThrow(() -> new NotFoundException("지점을 찾을 수 없습니다."));
         branch.updateLocation(lat, lng);
     }
 }

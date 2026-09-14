@@ -3,6 +3,7 @@ package com.jin.project01.service.community;
 import com.jin.project01.entity.community.Community;
 import com.jin.project01.entity.community.CommunityBookmark;
 import com.jin.project01.entity.user.User;
+import com.jin.project01.exception.NotFoundException;
 import com.jin.project01.repository.community.CommunityBookmarkRepository;
 import com.jin.project01.repository.community.CommunityRepository;
 import com.jin.project01.repository.user.UserRepository;
@@ -24,16 +25,16 @@ public class CommunityBookmarkService {
     // 북마크 여부 확인
     public boolean isBookmarked(Integer userNo, Integer communityNo) {
         User user = userRepository.findById(userNo)
-                .orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없습니다."));
+                .orElseThrow(() -> new NotFoundException("사용자를 찾을 수 없습니다."));
         Community community = communityRepository.findByCommunityNoAndIsDeletedFalse(communityNo)
-                .orElseThrow(() -> new IllegalArgumentException("게시글을 찾을 수 없습니다."));
+                .orElseThrow(() -> new NotFoundException("게시글을 찾을 수 없습니다."));
         return communityBookmarkRepository.existsByCommunityAndUser(community, user);
     }
 
     // 나의 북마크 조회
     public List<CommunityBookmark> getMyBookmarks(Integer userNo) {
         User user = userRepository.findById(userNo)
-                .orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없습니다."));
+                .orElseThrow(() -> new NotFoundException("사용자를 찾을 수 없습니다."));
         return communityBookmarkRepository.findByUser(user);
     }
 
@@ -41,9 +42,9 @@ public class CommunityBookmarkService {
     @Transactional
     public void addBookmark(Integer userNo, Integer communityNo) {
         User user = userRepository.findById(userNo)
-                .orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없습니다."));
+                .orElseThrow(() -> new NotFoundException("사용자를 찾을 수 없습니다."));
         Community community = communityRepository.findByCommunityNoAndIsDeletedFalse(communityNo)
-                .orElseThrow(() -> new IllegalArgumentException("게시글을 찾을 수 없습니다."));
+                .orElseThrow(() -> new NotFoundException("게시글을 찾을 수 없습니다."));
         if (communityBookmarkRepository.existsByCommunityAndUser(community, user)) {
             throw new IllegalArgumentException("이미 북마크한 게시글입니다.");
         }
@@ -60,11 +61,11 @@ public class CommunityBookmarkService {
     @Transactional
     public void removeBookmark(Integer userNo, Integer communityNo) {
         User user = userRepository.findById(userNo)
-                .orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없습니다."));
+                .orElseThrow(() -> new NotFoundException("사용자를 찾을 수 없습니다."));
         Community community = communityRepository.findByCommunityNoAndIsDeletedFalse(communityNo)
-                .orElseThrow(() -> new IllegalArgumentException("게시글을 찾을 수 없습니다."));
+                .orElseThrow(() -> new NotFoundException("게시글을 찾을 수 없습니다."));
         CommunityBookmark bookmark = communityBookmarkRepository.findByCommunityAndUser(community, user)
-                .orElseThrow(() -> new IllegalArgumentException("북마크 내역을 찾을 수 없습니다."));
+                .orElseThrow(() -> new NotFoundException("북마크 내역을 찾을 수 없습니다."));
         communityBookmarkRepository.delete(bookmark);
     }
 

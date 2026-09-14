@@ -1,6 +1,7 @@
 package com.jin.project01.service.cafe;
 
 import com.jin.project01.entity.cafe.CafeRegion;
+import com.jin.project01.exception.NotFoundException;
 import com.jin.project01.repository.cafe.CafeRegionRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -23,7 +24,7 @@ public class CafeRegionService {
     // 특정 지역 하위 지역 조회
     public List<CafeRegion> getSigunguList(Integer regionNo) {
         CafeRegion sido = cafeRegionRepository.findById(regionNo)
-                .orElseThrow(() -> new IllegalArgumentException("지역을 찾을 수 없습니다."));
+                .orElseThrow(() -> new NotFoundException("지역을 찾을 수 없습니다."));
         return cafeRegionRepository.findByParentRegion(sido);
     }
 }

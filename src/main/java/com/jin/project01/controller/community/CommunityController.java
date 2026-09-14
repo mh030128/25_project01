@@ -5,6 +5,7 @@ import com.jin.project01.dto.community.CommunityRequest;
 import com.jin.project01.dto.community.CommunityResponse;
 import com.jin.project01.entity.community.Community;
 import com.jin.project01.security.CustomUserDetails;
+import com.jin.project01.service.community.CommunityBookmarkService;
 import com.jin.project01.service.community.CommunityLikeService;
 import com.jin.project01.service.community.CommunityService;
 import jakarta.validation.Valid;
@@ -25,6 +26,7 @@ public class CommunityController {
 
     private final CommunityService communityService;
     private final CommunityLikeService communityLikeService;
+    private final CommunityBookmarkService communityBookmarkService;
 
     // 전체 게시글 목록 조회
     @GetMapping
@@ -38,6 +40,21 @@ public class CommunityController {
                 .collect(Collectors.toList());
 
         return ResponseEntity.ok(communities);
+    }
+
+    // 내 북마크 목록 조회
+    @GetMapping("/bookmarks/my")
+    public ResponseEntity<List<CommunityListResponse>> getMyBookmarks(
+            @AuthenticationPrincipal CustomUserDetails userDetails) {
+        List<CommunityListResponse> bookmarks = communityBookmarkService.getMyBookmarks(userDetails.getUserNo())
+                .stream()
+                .map(bookmark -> CommunityListResponse.from(
+                        bookmark.getCommunity(),
+                        communityLikeService.getLikeCount(
+                                bookmark.getCommunity().getCommunityNo())
+                ))
+                .collect(Collectors.toList());
+        return ResponseEntity.ok(bookmarks);
     }
 
     // 게시글 단건 조회
@@ -122,6 +139,4 @@ public class CommunityController {
 
         return ResponseEntity.ok().build();
     }
-
-
 }

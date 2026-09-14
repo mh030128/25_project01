@@ -3,6 +3,7 @@ package com.jin.project01.service.cafe;
 import com.jin.project01.entity.cafe.CafeBrand;
 import com.jin.project01.entity.cafe.CafeBrandMenu;
 import com.jin.project01.entity.cafe.CafeMenuStatus;
+import com.jin.project01.exception.NotFoundException;
 import com.jin.project01.repository.cafe.CafeBrandMenuRepository;
 import com.jin.project01.repository.cafe.CafeBrandRepository;
 import lombok.RequiredArgsConstructor;
@@ -22,14 +23,14 @@ public class CafeBrandMenuService {
     // 특정 브랜드의 전체 메뉴 조회
     public List<CafeBrandMenu> getMenusByBrand(Integer brandNo) {
         CafeBrand brand = cafeBrandRepository.findById(brandNo)
-                .orElseThrow(() -> new IllegalArgumentException("브랜드를 찾을 수 없습니다."));
+                .orElseThrow(() -> new NotFoundException("브랜드를 찾을 수 없습니다."));
         return cafeBrandMenuRepository.findByCafeBrand(brand);
     }
 
     // 특정 브랜드의 판매 중인 메뉴만 조회
     public List<CafeBrandMenu> getInStockMenusByBrand(Integer brandNo) {
         CafeBrand brand = cafeBrandRepository.findById(brandNo)
-                .orElseThrow(() -> new IllegalArgumentException("브랜드를 찾을 수 없습니다."));
+                .orElseThrow(() -> new NotFoundException("브랜드를 찾을 수 없습니다."));
         return cafeBrandMenuRepository.findByCafeBrandAndCafeMenuStatus(brand, CafeMenuStatus.IN_STOCK);
 
     }

@@ -3,6 +3,8 @@ package com.jin.project01.service.community;
 import com.jin.project01.entity.community.Community;
 import com.jin.project01.entity.community.CommunityComment;
 import com.jin.project01.entity.user.User;
+import com.jin.project01.exception.ForbiddenException;
+import com.jin.project01.exception.NotFoundException;
 import com.jin.project01.repository.community.CommunityCommentRepository;
 import com.jin.project01.repository.community.CommunityRepository;
 import com.jin.project01.repository.user.UserRepository;
@@ -24,7 +26,7 @@ public class CommunityCommentService {
     // 특정 게시글의 댓글 목록 조회
     public List<CommunityComment> getComments(Integer communityNo) {
         Community community = communityRepository.findByCommunityNoAndIsDeletedFalse(communityNo)
-                .orElseThrow(() -> new IllegalArgumentException("게시글을 찾을 수 없습니다"));
+                .orElseThrow(() -> new NotFoundException("게시글을 찾을 수 없습니다"));
         return communityCommentRepository.findByCommunityAndParentCommentIsNullAndIsDeletedFalse(community);
     }
 
@@ -32,15 +34,20 @@ public class CommunityCommentService {
     @Transactional
     public Integer createComment(Integer userNo, Integer communityNo, String content, Integer parentCommentNo) {
         User user = userRepository.findById(userNo)
-                .orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없습니다"));
+                .orElseThrow(() -> new NotFoundException("사용자를 찾을 수 없습니다"));
         Community community = communityRepository.findByCommunityNoAndIsDeletedFalse(communityNo)
-                .orElseThrow(() -> new IllegalArgumentException("게시글을 찾을 수 없습니다"));
+                .orElseThrow(() -> new NotFoundException("게시글을 찾을 수 없습니다"));
 
         // 대댓글인 경우 부모 댓글 조회
         CommunityComment parentComment = null;
         if (parentCommentNo != null) {
             parentComment = communityCommentRepository.findById(parentCommentNo)
-                    .orElseThrow(() -> new IllegalArgumentException("댓글을 찾을 수 없습니다"));
+                    .orElseThrow(() -> new NotFoundException("댓글을 찾을 수 없습니다"));
+
+            // 부모 댓글이 같은 게시글 소속인지 확인
+            if (!parentComment.getCommunity().getCommunityNo().equals(communityNo)) {
+                throw new IllegalArgumentException("해당 게시글의 댓글이 아닙니다.");
+            }
 
             // 대댓글의 대댓글 방지 -> 1단계만 허용
             if (parentComment.getParentComment() != null) {
@@ -62,11 +69,11 @@ public class CommunityCommentService {
     @Transactional
     public void updateComment(Integer userNo, Integer commentNo, String content) {
         CommunityComment comment = communityCommentRepository.findById(commentNo)
-                .orElseThrow(() -> new IllegalArgumentException("댓글을 찾을 수 없습니다."));
+                .orElseThrow(() -> new NotFoundException("댓글을 찾을 수 없습니다."));
 
-        // 작성자 확인
-        if (!comment.getUser().getUserNo().equals(userNo)) {
-            throw new IllegalArgumentException("수정 권한이 없습니다.");
+        // 작성자 확인_퇄퇴 등으로 작성자가 없는 경우 포함
+        if (comment.getUser() == null || !comment.getUser().getUserNo().equals(userNo)) {
+            throw new ForbiddenException("수정 권한이 없습니다.");
         }
 
         comment.update(content);
@@ -76,11 +83,11 @@ public class CommunityCommentService {
     @Transactional
     public void deleteComment(Integer userNo, Integer commentNo) {
         CommunityComment comment = communityCommentRepository.findById(commentNo)
-                .orElseThrow(() -> new IllegalArgumentException("댓글을 찾을 수 없습니다."));
+                .orElseThrow(() -> new NotFoundException("댓글을 찾을 수 없습니다."));
 
-        // 작성자 확인
-        if (!comment.getUser().getUserNo().equals(userNo)) {
-            throw new IllegalArgumentException("삭제 권한이 없습니다.");
+        // 작성자 확인_퇄퇴 등으로 작성자가 없는 경우 포함
+        if (comment.getUser() == null || !comment.getUser().getUserNo().equals(userNo)) {
+            throw new ForbiddenException("삭제 권한이 없습니다.");
         }
 
         comment.delete();

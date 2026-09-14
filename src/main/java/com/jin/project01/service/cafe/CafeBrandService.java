@@ -1,6 +1,7 @@
 package com.jin.project01.service.cafe;
 
 import com.jin.project01.entity.cafe.CafeBrand;
+import com.jin.project01.exception.NotFoundException;
 import com.jin.project01.repository.cafe.CafeBrandRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -23,7 +24,7 @@ public class CafeBrandService {
     // 브랜드 단건 조회
     public CafeBrand getBrand(Integer brandNo) {
         return cafeBrandRepository.findById(brandNo)
-                .orElseThrow(() -> new IllegalArgumentException("브랜드를 찾을 수 없습니다."));
+                .orElseThrow(() -> new NotFoundException("브랜드를 찾을 수 없습니다."));
     }
 
     // 브랜드 추가

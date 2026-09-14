@@ -1,12 +1,12 @@
 package com.jin.project01.service.community;
 
-import com.jin.project01.entity.cafe.CafeBrand;
 import com.jin.project01.entity.cafe.CafeBrandMenu;
 import com.jin.project01.entity.community.Community;
 import com.jin.project01.entity.community.CommunityImg;
 import com.jin.project01.entity.user.User;
+import com.jin.project01.exception.ForbiddenException;
+import com.jin.project01.exception.NotFoundException;
 import com.jin.project01.repository.cafe.CafeBrandMenuRepository;
-import com.jin.project01.repository.cafe.CafeBrandRepository;
 import com.jin.project01.repository.community.CommunityImgRepository;
 import com.jin.project01.repository.community.CommunityRepository;
 import com.jin.project01.repository.user.UserRepository;
@@ -34,13 +34,13 @@ public class CommunityService {
     // 게시글 단건 조회
     public Community getCommunity(Integer communityNo) {
         return communityRepository.findByCommunityNoAndIsDeletedFalse(communityNo)
-                .orElseThrow(() -> new IllegalArgumentException("게시글을 찾을 수 없습니다."));
+                .orElseThrow(() -> new NotFoundException("게시글을 찾을 수 없습니다."));
     }
 
     // 특정 유저의 게시글 조회
     public List<Community> getMyCommunities(Integer userNo) {
         User user = userRepository.findById(userNo)
-                .orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없습니다."));
+                .orElseThrow(() -> new NotFoundException("사용자를 찾을 수 없습니다."));
         return communityRepository.findByUserAndIsDeletedFalse(user);
     }
 
@@ -53,9 +53,9 @@ public class CommunityService {
     @Transactional
     public Integer createCommunity(Integer userNo, Integer cafeMenuNo, String title, String content, List<String> imgUrls) {
         User user = userRepository.findById(userNo)
-                .orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없습니다."));
+                .orElseThrow(() -> new NotFoundException("사용자를 찾을 수 없습니다."));
         CafeBrandMenu cafeBrandMenu = cafeBrandMenuRepository.findById(cafeMenuNo)
-                .orElseThrow(() -> new IllegalArgumentException("메뉴를 찾을 수 없습니다"));
+                .orElseThrow(() -> new NotFoundException("메뉴를 찾을 수 없습니다"));
 
         Community community = Community.builder()
                 .user(user)
@@ -83,11 +83,11 @@ public class CommunityService {
     @Transactional
     public void updateCommunity(Integer userNo, Integer communityNo, String title, String content) {
         Community community = communityRepository.findByCommunityNoAndIsDeletedFalse(communityNo)
-                .orElseThrow(() -> new IllegalArgumentException("게시글을 찾을 수 없습니다."));
+                .orElseThrow(() -> new NotFoundException("게시글을 찾을 수 없습니다."));
 
-        // 작성자 확인
-        if (!community.getUser().getUserNo().equals(userNo)) {
-            throw new IllegalArgumentException("수정 권한이 없습니다.");
+        // 작성자 확인_탈퇴 등으로 작성자가 없는 경우 포함
+        if (community.getUser() == null || !community.getUser().getUserNo().equals(userNo)) {
+            throw new ForbiddenException("수정 권한이 없습니다.");
         }
 
         community.update(title, content);
@@ -97,11 +97,11 @@ public class CommunityService {
     @Transactional
     public void deleteCommunity(Integer userNo, Integer communityNo) {
         Community community = communityRepository.findByCommunityNoAndIsDeletedFalse(communityNo)
-                .orElseThrow(() -> new IllegalArgumentException("게시글을 찾을 수 없습니다."));
+                .orElseThrow(() -> new NotFoundException("게시글을 찾을 수 없습니다."));
 
         // 작성자 확인
-        if(!community.getUser().getUserNo().equals(userNo)) {
-            throw new IllegalArgumentException("삭제 권한이 없습니다.");
+        if(community.getUser() == null || !community.getUser().getUserNo().equals(userNo)) {
+            throw new ForbiddenException("삭제 권한이 없습니다.");
         }
 
         community.delete();
@@ -111,7 +111,7 @@ public class CommunityService {
     @Transactional
     public void increaseViewCnt(Integer communityNo) {
         Community community = communityRepository.findByCommunityNoAndIsDeletedFalse(communityNo)
-                .orElseThrow(() -> new IllegalArgumentException("게시글을 찾을 수 없습니다."));
+                .orElseThrow(() -> new NotFoundException("게시글을 찾을 수 없습니다."));
         community.increaseViewCnt();
     }
 

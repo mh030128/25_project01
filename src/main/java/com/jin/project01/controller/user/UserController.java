@@ -45,7 +45,7 @@ public class UserController {
     }
 
     // 회원 탈퇴
-    @GetMapping("/withdraw")
+    @DeleteMapping("/withdraw")
     public ResponseEntity<Void> withdraw(
             @AuthenticationPrincipal CustomUserDetails userDetails) {
         userService.withdraw(userDetails.getUserNo());

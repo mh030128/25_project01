@@ -7,6 +7,7 @@ import com.jin.project01.dto.user.SignUpRequest;
 import com.jin.project01.entity.user.Role;
 import com.jin.project01.entity.user.User;
 import com.jin.project01.entity.user.UserStatus;
+import com.jin.project01.exception.NotFoundException;
 import com.jin.project01.jwt.JwtTokenProvider;
 import com.jin.project01.repository.user.UserRepository;
 import com.jin.project01.service.community.CommunityBookmarkService;
@@ -99,7 +100,7 @@ public class UserService {
     // 내 정보 확인
     public MeResponse getMyInfo(Integer userNo) {
         User user = userRepository.findById(userNo)
-                .orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없습니다."));
+                .orElseThrow(() -> new NotFoundException("사용자를 찾을 수 없습니다."));
 
         if (user.getUserStatus() == UserStatus.WITHDRAW) {
             throw new IllegalArgumentException("탈퇴한 사용자입니다.");
@@ -122,7 +123,7 @@ public class UserService {
     @Transactional
     public void withdraw(Integer userNo) {
         User user = userRepository.findById(userNo)
-                .orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없습니다."));
+                .orElseThrow(() -> new NotFoundException("사용자를 찾을 수 없습니다."));
 
         user.withdraw();
 
