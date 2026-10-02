@@ -15,6 +15,11 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+
+import java.util.List;
 
 @Configuration
 @RequiredArgsConstructor
@@ -28,49 +33,51 @@ public class SecurityConfig {
         return new BCryptPasswordEncoder();
     }
 
+    // 프론트엔드(localhost:5173)에서 오는 요청을 허용하기 위한 CORS 설정
+    @Bean
+    public CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration configuration = new CorsConfiguration();
+        configuration.setAllowedOrigins(List.of("http://localhost:5173"));
+        configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"));
+        configuration.setAllowedHeaders(List.of("*"));
+        configuration.setAllowCredentials(true);
+
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", configuration);
+        return source;
+    }
+
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                // CSRF 비활성화 (JWT 사용시 불필요)
                 .csrf(AbstractHttpConfigurer::disable)
-
-                // 세션 미사용 (STATELESS)
+                .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .sessionManagement(session ->
                         session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 )
-
-                // 경로별 인증 설정
                 .authorizeHttpRequests(auth -> auth
-                        // 회원가입, 로그인_메서드 상관없이 공개_GET이 따로 없음
                         .requestMatchers(
                                 "/api/users/signup",
                                 "/api/users/login"
                         ).permitAll()
-
-                        // 조회만 공개
                         .requestMatchers(HttpMethod.GET,
-                                "/api/cafe/regions/**",    // 지역 조회
-                                "/api/cafe/brands",                 // 브랜드 목록
-                                "/api/cafe/brands/*",               // 브랜드 상세
-                                "/api/cafe/brands/*/menus/**",      // 메뉴조회
-                                "/api/cafe/branches/{branchNo}",    // 지점 단건 조회
-                                "/api/cafe/branches/brand/**",      // 브랜드별 지점 조회
-                                "/api/cafe/branches/region/**",     // 지역별 지점 조회
-                                "/api/communities",                 // 게시글 목록
-                                "/api/communities/{id}",            // 게시글 상세
-                                "/api/communities/brand/**",        // 브랜드별 게시글
-                                "/api/communities/menu/**",         // 메뉴별 게시글
-                                "/api/communities/{id}/comments"    // 댓글 목록
+                                "/api/cafe/regions/**",
+                                "/api/cafe/brands",
+                                "/api/cafe/brands/*",
+                                "/api/cafe/brands/*/menus/**",
+                                "/api/cafe/branches/{branchNo}",
+                                "/api/cafe/branches/brand/**",
+                                "/api/cafe/branches/region/**",
+                                "/api/communities",
+                                "/api/communities/{id}",
+                                "/api/communities/brand/**",
+                                "/api/communities/menu/**",
+                                "/api/communities/{id}/comments"
                         ).permitAll()
-
-                        // 브랜드 등록은 관리자만
                         .requestMatchers(HttpMethod.POST, "/api/cafe/brands").hasRole("ADMIN")
-
                         .requestMatchers("/api/admin/**").hasRole("ADMIN")
                         .anyRequest().authenticated()
                 )
-
-                // 인증/인가 실패 처리
                 .exceptionHandling(ex -> ex
                         .authenticationEntryPoint((request, response, e) -> {
                             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
@@ -83,8 +90,6 @@ public class SecurityConfig {
                             response.getWriter().write("{\"message\": \"접근 권한이 없습니다.\"}");
                         })
                 )
-
-                // JWT 필터 등록
                 .addFilterBefore(
                         new JwtAuthenticationFilter(jwtTokenProvider, userDetailsService),
                         UsernamePasswordAuthenticationFilter.class
