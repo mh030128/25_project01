@@ -1,12 +1,22 @@
-function HomePage() {
-  const userName = localStorage.getItem("userName");
+// function HomePage() {
+//   const userName = localStorage.getItem("userName");
 
+//   return (
+//     <div style={{ padding: "40px" }}>
+//       <h1>홈</h1>
+//       {userName ? <p>{userName}님, 환영합니다!</p> : <p>로그인이 필요합니다.</p>}
+//     </div>
+//   );
+// }
+
+// export default HomePage;
+
+import React from 'react'
+
+export default function HomePage() {
   return (
-    <div style={{ padding: "40px" }}>
-      <h1>홈</h1>
-      {userName ? <p>{userName}님, 환영합니다!</p> : <p>로그인이 필요합니다.</p>}
+    <div>
+      <h3>home페이지</h3>
     </div>
-  );
+  )
 }
-
-export default HomePage;
