@@ -77,20 +77,45 @@
 
 import React, { useState } from 'react'
 import api from '../../api/axios';
+import { useNavigate } from 'react-router-dom';
 
 export default function LoginPage() {
 
   const [userId, setUserId] = useState('');
   const [userPw, setUserPw] = useState('');
+  const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setError('');
+    setLoading(true);
 
     try {
-      const response = await api.post('/api/users/login', { userId, userPw })
+      const response = await api.post('/api/users/login', { userId, userPw });
+      const data = response.data;
+
+      localStorage.setItem('accessToken', data.accessToken);
+      localStorage.setItem('userNo', data.userNo);
+      localStorage.setItem('userId', data.userId);
+      localStorage.setItem('userName', data.userName);
+
+      navigate('/');
+
       console.log('성공 응답: ', response.data)
     } catch (err) {
-      console.log('실패: ', err)
+      console.log('실패 응답 내용: ', err.response?.data)
+
+      if (err.response) {
+        const resData = err.response.data;
+        const message = typeof resData === 'string' ? resData : resData?.message
+        setError(message || '로그인에 실패했습니다.')
+      } else {
+        setError('서버에 연결할 수 없습니다.')
+      }
+    } finally {
+      setLoading(false)
     }
   }
   
@@ -107,7 +132,11 @@ export default function LoginPage() {
           <input id='userPw' type='password' value={userPw} onChange={(e) => setUserPw(e.target.value)}/>
         </div>
 
-        <button type='submit'>로그인</button>
+        {error && <p style={{ color: 'red' }}>{error}</p>}
+
+        <button type='submit' disabled={loading}>
+          {loading ? '로그인 중' : '로그인'}
+        </button>
       </form>
     </div>
   )
