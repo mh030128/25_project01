@@ -38,11 +38,11 @@
 }
 
 .header-nav a:hover {
-  color: #2563eb;
+  color: #fff;
 }
 
 .header-nav a.active {
-  color: #2563eb;
+  color: #cac8c8;
 }
 
 .header-right {
@@ -61,5 +61,5 @@
 }
 
 .header-right a:hover {
-  color: #2563eb;
+  color: #fff;
 }

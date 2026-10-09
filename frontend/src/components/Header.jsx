@@ -17,8 +17,6 @@ export default function Header() {
 
         <div className='header-right'>
           <Link to='/login'>로그인</Link>
-          <span>/</span>
-          <Link to='/signup'>회원가입</Link>
         </div>
       </div>
     </header>
