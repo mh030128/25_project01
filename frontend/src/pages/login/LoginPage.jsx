@@ -38,7 +38,7 @@ export default function LoginPage() {
       console.log('실패 응답 내용: ', err.response?.data)
 
       if (!err.response) {
-        setError('서버에 연결할 수 없습니다.');
+        setError('문제가 발생했습니다.');
         return
       }
 

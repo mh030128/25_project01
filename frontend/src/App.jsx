@@ -6,6 +6,7 @@ import HomePage from "./pages/HomePage";
 import CafePage from "./pages/cafe/CafePage";
 import CommunityPage from "./pages/community/CommunityPage";
 import ShoppingPage from "./pages/shopping/ShoppingPage";
+import MyPage from "./pages/users/MyPage";
 
 
 function App() {
@@ -20,6 +21,7 @@ function App() {
         <Route path="/cafe" element={<CafePage />} />
         <Route path="/community" element={<CommunityPage />} />
         <Route path="/shopping" element={<ShoppingPage />} />
+        <Route path="/mypage" element={<MyPage />} />
       </Routes>
     </div>
     </BrowserRouter>
