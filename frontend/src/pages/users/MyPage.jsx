@@ -10,7 +10,7 @@ export default function MyPage() {
   
   useEffect(() => {
     const token = localStorage.getItem('accessToken');
-    if (!token) {
+    if (!token) { 
       navigate('/login', { replace: true });
       return;
     }
