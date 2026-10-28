@@ -34,7 +34,7 @@ public class SignUpRequest {
 
     @NotBlank(message = "전화번호를 입력해주세요.")
     @Size(max = 20)
-    @Pattern(regexp = "^01[016789]-?\\d{3,4}-?\\d{4}$", message = "전화번호 형식이 올바르지 않습니다.")
+    @Pattern(regexp = "^01[016789]-\\d{3,4}-\\d{4}$", message = "전화번호 형식이 올바르지 않습니다.")
     private String userPhone;
 
     @NotBlank(message = "우편번호를 입력해주세요.")
